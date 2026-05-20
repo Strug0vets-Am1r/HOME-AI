@@ -1,0 +1,151 @@
+.auth-error {
+    display: none;
+    margin-bottom: 14px;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--danger) 12%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+    color: var(--danger);
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.auth-error.is-visible {
+    display: block;
+}
+
+.survey-page {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.survey-page .panel {
+    max-width: 100%;
+}
+
+.survey__intro {
+    margin-bottom: 28px;
+}
+
+.survey__intro h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.survey__intro p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.survey__section {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1.5px solid var(--border-color);
+}
+
+/* Перед кнопкой «Завершить» — одна линия (border-top у submit), не две */
+.survey__section:has(+ .survey__submit) {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 16px;
+}
+
+.survey__section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin: 0 0 16px;
+}
+
+.checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.check {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-size: 14px;
+    font-weight: 500;
+    user-select: none;
+}
+
+.check:hover {
+    border-color: var(--primary);
+}
+
+.check input[type="checkbox"],
+.check input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.survey__field {
+    margin-bottom: 16px;
+}
+
+.survey__field:last-child {
+    margin-bottom: 0;
+}
+
+.survey__field .field__label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.survey__field .input {
+    width: 100%;
+}
+
+.survey__radio-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.survey__radio-group .check {
+    flex: 1;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.survey__radio-group .check input[type="radio"] {
+    display: none;
+}
+
+.survey__radio-group .check:has(input[type="radio"]:checked) {
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 20%, var(--surface));
+}
+
+.survey__submit {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 24px;
+    margin-top: 8px;
+    border-top: 1.5px solid var(--border-color);
+}
+
+.survey__submit .button {
+    min-width: 200px;
+    height: 44px;
+}

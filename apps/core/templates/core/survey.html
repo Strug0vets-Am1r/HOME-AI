@@ -1,0 +1,90 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/survey.css' %}">
+{% endblock %}
+
+{% block title %}Опрос{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+    <div style="display: flex; align-items: center; gap: 16px; position: relative;">
+        <h1 class="topbar__title" id="topbar-title">Опрос</h1>
+    </div>
+    <div class="topbar__actions"></div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="survey-page">
+    <div class="panel">
+        <div class="panel__body">
+            <div class="survey__intro">
+                <h2>Расскажите о своём доме</h2>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="survey__section">
+                    <div class="survey__section-title">Техника</div>
+                    <div class="checklist">
+                        <label class="check" for="has_dishwasher">
+                            <input type="checkbox" id="has_dishwasher" name="has_dishwasher">
+                            <span>У меня есть посудомойка</span>
+                        </label>
+                        <label class="check" for="has_robot_vacuum">
+                            <input type="checkbox" id="has_robot_vacuum" name="has_robot_vacuum">
+                            <span>У меня есть робот-пылесос</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="survey__section">
+                    <div class="survey__section-title">Дом</div>
+                    <div class="checklist">
+                        <label class="check" for="has_plants">
+                            <input type="checkbox" id="has_plants" name="has_plants">
+                            <span>У меня есть комнатные растения</span>
+                        </label>
+                        <label class="check" for="has_pets">
+                            <input type="checkbox" id="has_pets" name="has_pets">
+                            <span>У меня есть домашние животные</span>
+                        </label>
+                    </div>
+                    <div class="survey__field" style="margin-top: 16px;">
+                        <label class="field__label" for="room_count">Количество комнат</label>
+                        <input type="number" class="input" id="room_count" name="room_count" min="1" max="10" placeholder="Например: 2">
+                    </div>
+                </div>
+
+                <div class="survey__section">
+                    <div class="survey__section-title">Уборка</div>
+                    <div class="survey__field">
+                        <div class="field__label">Как часто вы предпочитаете убираться?</div>
+                        <div class="survey__radio-group">
+                            <label class="check">
+                                <input type="radio" name="cleaning_frequency" value="daily">
+                                <span>Ежедневно</span>
+                            </label>
+                            <label class="check">
+                                <input type="radio" name="cleaning_frequency" value="weekly" checked>
+                                <span>Раз в неделю</span>
+                            </label>
+                            <label class="check">
+                                <input type="radio" name="cleaning_frequency" value="monthly">
+                                <span>Раз в месяц</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="survey__submit">
+                    <button type="submit" class="button button--primary">Завершить настройку</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

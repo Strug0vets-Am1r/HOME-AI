@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/suggestions.css' %}">
+{% endblock %}
+
+{% block title %}Предложения{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+    <div>
+        <h1 class="topbar__title">Предложения</h1>
+    </div>
+    <div class="topbar__actions">
+        <button type="button" onclick="window.history.back()" class="topbar__close-btn" title="Закрыть">×</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="suggestions-page">
+    {% if suggestions %}
+            <div class="suggestion-list">
+                {% for s in suggestions %}
+                    <div class="suggestion-card" id="suggestion-{{ s.id }}">
+                        <div class="suggestion-card__top">
+                            <div class="suggestion-card__title-wrap">
+                                <h3 class="suggestion-card__title">{{ s.title }}</h3>
+                            </div>
+                            <time class="suggestion-card__date">{{ s.suggested_date|date:'d.m.Y' }}</time>
+                        </div>
+                        <div class="suggestion-card__bottom">
+                            <span class="suggestion-card__badge suggestion-card__badge--pending">
+                                Каждые {{ s.interval_days }} дн.
+                            </span>
+                            <div class="suggestion-card__actions">
+                                <button type="button" class="button button--success button--small" onclick="handleSuggestion({{ s.id }}, 'accept')">Принять</button>
+                                <button type="button" class="button button--danger button--small" onclick="handleSuggestion({{ s.id }}, 'reject')">Отклонить</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+    {% else %}
+        <div class="empty-state">
+            <svg class="empty-state__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/></svg>
+            <h3 class="empty-state__title">Нет предложений</h3>
+            <p class="empty-state__text">AI пока не заметил повторяющихся задач. Завершай задачи регулярно — и предложения появятся здесь.</p>
+        </div>
+    {% endif %}
+</div>
+
+
+
+{% endblock %}
+{% block extra_js %}
+{% load static %}
+<script>
+window.SUGGESTIONS_PAGE = {
+    apiUrl: "{% url 'suggestions_api' %}",
+    csrfToken: "{{ csrf_token }}"
+};
+</script>
+<script src="{% static 'js/suggestions.js' %}"></script>
+{% endblock %}
+

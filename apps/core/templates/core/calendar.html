@@ -1,0 +1,84 @@
+{% extends 'core/base.html' %}
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/calendar.css' %}?v=2">
+{% endblock %}
+
+{% block title %}Календарь{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+    <div style="display: flex; align-items: center; gap: 16px; position: relative;">
+        <h1 class="topbar__title" id="topbar-title">Календарь</h1>
+    </div>
+    {% if user.is_authenticated %}
+        <div class="topbar__actions">
+            <button class="cal-view-btn is-active" data-view="month" id="btn-month">Месяц</button>
+            <button class="cal-view-btn" data-view="week" id="btn-week">Неделя</button>
+            <a href="{% url 'task_create' %}" class="topbar__action-button">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Новая задача
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="cal-page">
+
+    <!-- ── Навигация календаря ── -->
+    <div class="cal-nav">
+        <button class="cal-nav-btn" id="cal-prev" aria-label="Предыдущий">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"/></svg>
+        </button>
+        <h2 class="cal-nav__title" id="cal-title"></h2>
+        <button class="cal-nav-btn" id="cal-next" aria-label="Следующий">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 1 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/></svg>
+        </button>
+        <button class="cal-today-btn" id="cal-today">Сегодня</button>
+    </div>
+
+    <div class="cal-body">
+
+        <!-- ── Сетка календаря ── -->
+        <div class="cal-grid-wrap" id="cal-grid-wrap">
+
+            <!-- Дни недели -->
+            <div class="cal-weekdays" id="cal-weekdays">
+                <span>Пн</span><span>Вт</span><span>Ср</span>
+                <span>Чт</span><span>Пт</span>
+                <span class="cal-weekend">Сб</span>
+                <span class="cal-weekend">Вс</span>
+            </div>
+
+            <!-- Ячейки -->
+            <div class="cal-grid" id="cal-grid"></div>
+        </div>
+
+        <!-- ── Боковая панель ── -->
+        <aside class="cal-sidebar" id="cal-sidebar">
+            <div class="cal-sidebar__header">
+                <div class="cal-sidebar__date" id="sidebar-date">Выбери день</div>
+                <button class="cal-sidebar__close" id="sidebar-close" aria-label="Закрыть">×</button>
+            </div>
+            <div class="cal-sidebar__body" id="sidebar-body">
+                <p class="cal-sidebar__empty">Нажми на день в календаре</p>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<!-- ── Модалка задачи ── -->
+<div class="modal-backdrop task-modal" id="task-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog--task panel panel--glass" role="dialog" aria-modal="true">
+        <div class="panel__body task-modal__body" id="task-modal-body"></div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/calendar.js' %}"></script>
+{% endblock %}
+

@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+{% block extra_css %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block title %}Вход{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+    <div style="display: flex; align-items: center; gap: 16px; position: relative;">
+        <h1 class="topbar__title" id="topbar-title">Вход</h1>
+    </div>
+    <div class="topbar__actions">
+        <a href="{% url 'home' %}" class="topbar__close-btn" title="Закрыть" style="text-decoration: none;">×</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="panel" style="max-width: 560px; margin:0 auto;">
+    <div class="panel__body">
+        <form method="post" class="form-grid">
+            {% csrf_token %}
+
+            <div class="field">
+                <label class="field__label" for="username">Имя пользователя</label>
+                <input type="text" class="input" id="username" name="username" required>
+            </div>
+
+            <div class="field">
+                <label class="field__label" for="password">Пароль</label>
+                <input type="password" class="input" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="button button--primary">Войти</button>
+        </form>
+
+        <p class="muted" style="margin:18px 0 0;">
+            Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a>
+        </p>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/login.js' %}"></script>
+{% endblock %}
+

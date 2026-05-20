@@ -1,0 +1,151 @@
+.suggestions-page {
+        width: 100%;
+    }
+
+    .section-title {
+        margin: 0 0 16px;
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.01em;
+    }
+
+    .suggestion-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .suggestion-card {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        background: var(--surface);
+        padding: 16px 18px;
+        transition: all 200ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    .suggestion-card:hover {
+        transform: translateY(-1px);
+        border-color: var(--warning);
+    }
+
+    .suggestion-card__top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    .suggestion-card__title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .suggestion-card__title {
+        margin: 0;
+        font-size: 1.02rem;
+        font-weight: 600;
+        color: var(--text);
+        line-height: 1.2;
+    }
+
+    .suggestion-card__date {
+        color: var(--text-secondary);
+        font-size: 0.92rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .suggestion-card__bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 12px;
+        border-top: 1.5px solid var(--border-color);
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+    }
+
+    .suggestion-card__badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 28px;
+        padding: 0 10px;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .suggestion-card__badge--pending {
+        background: color-mix(in srgb, var(--primary) 20%, var(--surface));
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .suggestion-card__actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+
+    .topbar__close-btn {
+        width: 40px;
+        height: 40px;
+        border: 1.5px solid;
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--danger) 20%, var(--surface));
+        color: var(--danger);
+        border-color: var(--danger);
+        font-size: 1.4rem;
+        cursor: pointer;
+        transition: all var(--transition);
+        font-family: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .topbar__close-btn:hover {
+        background: color-mix(in srgb, var(--danger) 20%, var(--surface));
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 48px 20px;
+        border: 1.5px solid var(--border-color);
+        border-radius: 16px;
+        background: var(--surface);
+    }
+
+    .empty-state__icon {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 16px;
+        opacity: 0.35;
+        color: var(--text-secondary);
+    }
+
+    .empty-state__title {
+        margin: 0 0 8px;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .empty-state__text {
+        margin: 0;
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+        color: var(--text-secondary);
+        font-size: 14px;
+    }

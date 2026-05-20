@@ -1,0 +1,125 @@
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+
+class User(AbstractUser):
+    has_dishwasher = models.BooleanField(default=False)
+    has_robot_vacuum = models.BooleanField(default=False)
+    has_plants = models.BooleanField(default=False)
+    has_pets = models.BooleanField(default=False)
+
+    CLEANING_FREQUENCY_CHOICES = [
+        ('daily', 'Ежедневно'),
+        ('weekly', 'Еженедельно'),
+        ('monthly', 'Ежемесячно'),
+    ]
+    cleaning_frequency = models.CharField(
+        max_length=20,
+        choices=CLEANING_FREQUENCY_CHOICES,
+        blank=True,
+        null=True
+    )
+
+    room_count = models.IntegerField(default=1)
+    is_survey_completed = models.BooleanField(default=False)
+
+    GENDER_CHOICES = [
+        ('male', 'Мужской'),
+        ('female', 'Женский'),
+    ]
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
+
+    def __str__(self):
+        return self.username
+
+
+class Task(models.Model):
+    LIST_CHOICES = [
+        ('active', 'Актуальные'),
+        ('urgent', 'Срочные'),
+        ('planned', 'В планах'),
+        ('favorites', 'Избранные'),
+        ('overdue', 'Просроченные'),
+        ('completed', 'Выполненные'),
+    ]
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='tasks'
+    )
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    due_date = models.DateTimeField()
+    is_completed = models.BooleanField(default=False)
+    is_favorite = models.BooleanField(default=False)
+    task_list = models.CharField(
+        max_length=20,
+        choices=LIST_CHOICES,
+        default='active'
+    )
+    original_task_list = models.CharField(
+        max_length=20,
+        choices=LIST_CHOICES,
+        default='active',
+        blank=True,
+        null=True
+    )
+
+    parent_task = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='subtasks'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['is_completed', 'due_date', 'id']
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def is_subtask(self):
+        return self.parent_task is not None
+
+
+class TaskHistory(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='task_history'
+    )
+    task_title = models.CharField(max_length=255)
+    task_list = models.CharField(max_length=20, blank=True, default='')
+    completed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-completed_at']
+
+    def __str__(self):
+        return f'{self.task_title} - {self.completed_at:%d.%m.%Y %H:%M}'
+
+
+class RecurringSuggestion(models.Model):
+    SUGGESTION_CHOICES = [
+        ('pending', 'Ожидает'),
+        ('accepted', 'Принято'),
+        ('rejected', 'Отклонено'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='suggestions')
+    title = models.CharField(max_length=255)
+    interval_days = models.IntegerField()
+    suggested_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=SUGGESTION_CHOICES, default='pending')
+
+    class Meta:
+        ordering = ['-suggested_date']
+
+    def __str__(self):
+        return f'{self.title} (каждые {self.interval_days} дн.) - {self.get_status_display()}'

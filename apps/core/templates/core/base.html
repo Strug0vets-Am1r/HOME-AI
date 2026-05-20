@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Home AI - {% block title %}Помощник по дому{% endblock %}</title>
+    <script>
+        (function () {
+            var t = localStorage.getItem('home_ai_theme') || 'light';
+            if (t === 'dark' || t === 'light') {
+                document.documentElement.setAttribute('data-theme', t);
+            }
+        })();
+    </script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+
+</head>
+<body>
+    <a class="skip-link" href="#content">Перейти к содержимому</a>
+
+    {% if user.is_authenticated %}
+    <!-- ── Модалка подтверждения (глобальная) ── -->
+    <div id="confirm-modal" class="modal-backdrop">
+        <div class="modal-dialog confirm-modal__dialog">
+            <div class="confirm-modal__content">
+                <h2 class="confirm-modal__title" id="confirm-modal-title">Подтверждение</h2>
+                <p class="confirm-modal__text" id="confirm-modal-text"></p>
+                <div class="confirm-modal__actions">
+                    <button type="button" class="button button--primary" id="confirm-modal-cancel">Отмена</button>
+                    <button type="button" class="button button--danger" id="confirm-modal-confirm">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="notif-dropdown" id="notif-dropdown">
+        <div class="notif-dropdown__header">
+            <span class="notif-dropdown__title">Уведомления</span>
+            <button type="button" class="notif-dropdown__clear" id="notif-clear-all">Прочитано</button>
+        </div>
+        <div class="notif-dropdown__body" id="notif-list">
+            <div class="notif-dropdown__empty">Загрузка...</div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="app-container">
+        <!-- ── Sidebar ── -->
+        <aside class="sidebar">
+            <!-- Header with Title and Theme Toggle -->
+            <div class="sidebar__header" style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                <div class="sidebar__brand" style="cursor: default; text-decoration: none; flex: 1;">
+                    <span class="sidebar__brand-mark">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-4.5v-6a1.5 1.5 0 0 0-3 0v6H5a1 1 0 0 1-1-1v-8.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <span style="font-size: 15px;">HomeAI</span>
+                </div>
+                {% if user.is_authenticated %}
+                <div class="notif-btn" id="notif-btn" title="Уведомления" data-sidebar-header>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                    <span class="notif-btn__badge is-hidden" id="notif-badge">0</span>
+                </div>
+                {% endif %}
+                <button id="theme-toggle-btn" style="width: 32px; height: 32px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--surface); color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all var(--transition); font-family: inherit;" title="Переключить тему">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="sidebar__nav">
+                {% if user.is_authenticated %}
+                    <!-- Navigation and Profile -->
+                    <div class="sidebar__section">
+                        <ul class="sidebar__list">
+                            <li class="sidebar__item">
+                                <a href="{% url 'profile' %}" class="sidebar__link {% if request.resolver_match.url_name == 'profile' %}is-active{% endif %}">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    {{ user.username }}
+                                </a>
+                            </li>
+                            <li class="sidebar__item">
+                                <a href="{% url 'home' %}" class="sidebar__link {% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                    Задачи
+                                </a>
+                            </li>
+                            <li class="sidebar__item">
+                                <a href="{% url 'calendar' %}" class="sidebar__link {% if request.resolver_match.url_name == 'calendar' %}is-active{% endif %}">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    Календарь
+                                </a>
+                            </li>
+                            <li class="sidebar__item">
+                                <a href="{% url 'suggestions' %}" class="sidebar__link {% if request.resolver_match.url_name == 'suggestions' %}is-active{% endif %}">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                                    Предложения
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Прогресс -->
+                    <div class="sidebar__section">
+                        <div class="sidebar__section-title" style="color: var(--text-secondary);">Прогресс</div>
+                        <div class="progress-box" style="padding: 12px; font-size: 0.85rem; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+                                <span style="color: var(--suggestions);">Предложения</span>
+                                <span style="font-weight: 700; color: var(--suggestions); font-size: 1rem;" data-counter="suggestions_count">{{ suggestions_count }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+                                <span style="color: var(--success);">Активные</span>
+                                <span style="font-weight: 700; color: var(--success); font-size: 1rem;" data-counter="active_count">{{ active_count }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+                                <span style="color: var(--primary);">В планах</span>
+                                <span style="font-weight: 700; color: var(--primary); font-size: 1rem;" data-counter="planned_count">{{ planned_count }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+                                <span style="color: var(--warning);">Избранные</span>
+                                <span style="font-weight: 700; color: var(--warning); font-size: 1rem;" data-counter="favorites_count">{{ favorites_count }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+                                <span style="color: #d946ef;">Срочные</span>
+                                <span style="font-weight: 700; color: #d946ef; font-size: 1rem;" data-counter="urgent_count">{{ urgent_count }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color);">
+                                <span style="color: var(--danger);">Просроченные</span>
+                                <span style="font-weight: 700; color: var(--danger); font-size: 1rem;" data-counter="overdue_count">{{ overdue_count }}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #9ca3af;">Выполненные</span>
+                                <span style="font-weight: 700; color: #9ca3af; font-size: 1rem;" data-counter="completed_count">{{ completed_count }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Theme Switcher (at bottom) -->
+                    <div class="sidebar__section" style="margin-top: auto; margin-bottom: 0; display: none;">
+                        <label class="sidebar__section-title" for="themeSelect">Тема</label>
+                        <select id="themeSelect" class="select" style="width: 100%; min-height: 38px; font-size: 0.9rem;">
+                            <option value="light">Светлая</option>
+                            <option value="dark">Тёмная</option>
+                        </select>
+                    </div>
+
+                {% else %}
+                    <div class="sidebar__section">
+                        <ul class="sidebar__list">
+                            <li class="sidebar__item">
+                                <a href="{% url 'login' %}" class="sidebar__link">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+                                    Вход
+                                </a>
+                            </li>
+                            <li class="sidebar__item">
+                                <a href="{% url 'register' %}" class="sidebar__link">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                                    Регистрация
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+            </nav>
+
+        </aside>
+
+        <!-- ── Main Area ── -->
+        <div class="main-area">
+            <div class="topbar-container">
+                {% block topbar %}{% endblock %}
+            </div>
+
+            <div id="content" class="content">
+                <div id="toast-area" class="toast-area" aria-live="polite" aria-atomic="false">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="toast toast--{{ message.tags }}" role="alert">
+                                <svg class="toast__icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    {% if message.tags == 'error' or message.tags == 'danger' %}
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    {% else %}
+                                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clip-rule="evenodd"/>
+                                    {% endif %}
+                                </svg>
+                                <span class="toast__body">{{ message }}</span>
+                                <button type="button" class="toast__close" aria-label="Закрыть">×</button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                {% block content %}{% endblock %}
+            </div>
+
+            <!-- ── Footer ── -->
+            <footer class="app-footer">
+                <p class="app-footer__text">© 2025-2026 HomeAI. Умный планировщик домашних дел.</p>
+                <div class="app-footer__links">
+                    <a href="#" class="app-footer__link">Конфиденциальность</a>
+                    <a href="#" class="app-footer__link">Поддержка</a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    
+
+
+    <script>
+    window.HOME_AI_CONFIG = {
+        homeUrl: "{% url 'home' %}",
+        userId: {% if user.is_authenticated %}{{ user.id }}{% else %}null{% endif %}
+    };
+    </script>
+    <script src="{% static 'js/base.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

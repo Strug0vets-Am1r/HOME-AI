@@ -1,0 +1,24 @@
+Django==4.2.11
+djangorestframework==3.16.1
+psycopg[binary]==3.3.3
+drf-spectacular==0.27.2
+python-dotenv==1.0.1
+requests==2.32.3
+gunicorn==23.0.0
+whitenoise==6.9.0
+dj-database-url==2.3.0
+setuptools
+
+# Асинхронная обработка
+celery==5.4.0
+redis==5.2.1
+django-celery-beat==2.6.0
+
+# Event-driven система
+pydantic==2.13.1
+
+# JWT аутентификация
+djangorestframework-simplejwt==5.4.0
+
+# CORS для микросервисов
+django-cors-headers==4.4.0
